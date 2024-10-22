@@ -1,3 +1,5 @@
+﻿﻿using System;
+
 namespace OOP_Candy_Machine
 {
     public class CashRegister
@@ -6,32 +8,37 @@ namespace OOP_Candy_Machine
 
         public CashRegister()
         {
-            cashOnHand = 500; 
+            cashOnHand = 500;
         }
 
-        
         public CashRegister(int cashIn)
         {
-            cashOnHand = cashIn < 0 ? 500 : cashIn; 
+            if (cashIn < 0)
+            {
+                Console.WriteLine("Invalid amount. Please try again.");
+                cashOnHand = 500; 
+            }
+            else
+            {
+                cashOnHand = cashIn;
+            }
         }
 
-       
         public int CurrentBalance()
         {
             return cashOnHand;
         }
 
-      
         public void AcceptAmount(int amountIn)
         {
-            if (amountIn <= 0)
+            if (amountIn < 0)
             {
-                throw new ArgumentException("The amount must be greater than zero.");
+                Console.WriteLine("Invalid amount. Please try again.");
+                return;
             }
-            cashOnHand += amountIn;
+            cashOnHand += amountIn; 
         }
 
-     
         public int ProcessPayment(int cost)
         {
             if (cost <= 0)
@@ -40,20 +47,44 @@ namespace OOP_Candy_Machine
             }
 
             Console.WriteLine($"Please deposit {cost} pesos.");
-            int amountGiven = int.Parse(Console.ReadLine());
+
+            int amountGiven = 0;
+
 
             while (amountGiven < cost)
             {
-                int additionalNeeded = cost - amountGiven;
-                Console.WriteLine($"You need to deposit {additionalNeeded} more cash.");
-                amountGiven += int.Parse(Console.ReadLine());
+                Console.Write("Enter amount: ");
+                int inputAmount;
+
+            
+                while (!int.TryParse(Console.ReadLine(), out inputAmount) || inputAmount < 0)
+                {
+                    Console.WriteLine("Invalid amount. Please enter a positive number.");
+                    Console.Write("Enter amount: "); 
+                }
+
+                if (inputAmount > cashOnHand)
+                {
+                    Console.WriteLine("Insufficient vending machine cash, Please try again.");
+                    continue; 
+                }
+
+                amountGiven += inputAmount;
+
+                if (amountGiven < cost)
+                {
+                    int additionalNeeded = cost - amountGiven;
+                    Console.WriteLine($"You need to deposit {additionalNeeded} more cash.");
+                }
             }
 
-            AcceptAmount(cost); 
+           
+            AcceptAmount(cost);
+       
             return amountGiven - cost;
         }
     }
-} 
+}
 
 Class Dispenser, using System;
 

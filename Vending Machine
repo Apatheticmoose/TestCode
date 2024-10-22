@@ -1,0 +1,179 @@
+namespace OOP_Candy_Machine
+{
+    public class CashRegister
+    {
+        private int cashOnHand;
+
+        public CashRegister()
+        {
+            cashOnHand = 500; 
+        }
+
+        
+        public CashRegister(int cashIn)
+        {
+            cashOnHand = cashIn < 0 ? 500 : cashIn; 
+        }
+
+       
+        public int CurrentBalance()
+        {
+            return cashOnHand;
+        }
+
+      
+        public void AcceptAmount(int amountIn)
+        {
+            if (amountIn <= 0)
+            {
+                throw new ArgumentException("The amount must be greater than zero.");
+            }
+            cashOnHand += amountIn;
+        }
+
+     
+        public int ProcessPayment(int cost)
+        {
+            if (cost <= 0)
+            {
+                throw new ArgumentException("Cost must be greater than zero.");
+            }
+
+            Console.WriteLine($"Please deposit {cost} pesos.");
+            int amountGiven = int.Parse(Console.ReadLine());
+
+            while (amountGiven < cost)
+            {
+                int additionalNeeded = cost - amountGiven;
+                Console.WriteLine($"You need to deposit {additionalNeeded} more cash.");
+                amountGiven += int.Parse(Console.ReadLine());
+            }
+
+            AcceptAmount(cost); 
+            return amountGiven - cost;
+        }
+    }
+} 
+
+Class Dispenser, using System;
+
+namespace OOP_Candy_Machine
+{
+    public class Dispenser
+    {
+        private int numberOfItems;
+        private int cost;
+
+        public Dispenser()
+        {
+            numberOfItems = 50; 
+            cost = 50;          
+        }
+
+        public Dispenser(int setNoOfItems, int setCost)
+        {
+            numberOfItems = setNoOfItems >= 0 ? setNoOfItems : 50;
+            cost = setCost >= 0 ? setCost : 50;                   
+        }
+        
+        public int GetCount()
+        {
+            return numberOfItems;
+        }
+
+        
+        public int GetProductCost()
+        {
+            return cost;
+        }
+
+        public void SellProduct(CashRegister cash)
+        {
+            if (numberOfItems <= 0)
+            {
+                Console.WriteLine("Sorry, the item is out of stock.");
+                return;
+            }
+
+            int change = cash.ProcessPayment(cost); 
+
+            numberOfItems--;
+            Console.WriteLine("Item dispensed.");
+
+            if (change > 0)
+            {
+                Console.WriteLine($"Your change is: {change} pesos.");
+            }
+
+            Console.WriteLine($"Your balance is now: {cash.CurrentBalance()} pesos");
+        }
+    }
+} 
+
+Main Program, using System;
+
+namespace OOP_Candy_Machine
+{
+    internal class Program
+    {
+        private static object cashRegister;
+
+        static void Main(string[] args)
+        {
+            CashRegister cash = new CashRegister();
+            Dispenser candy = new Dispenser(1, 50);
+            Dispenser chips = new Dispenser(1, 50);
+            Dispenser gum = new Dispenser(1, 50);
+            Dispenser cookies = new Dispenser(1, 50);
+
+            Console.WriteLine("**** Welcome to Cleve's Vending MAchine ****\n");
+
+            while (true)
+            {
+                Console.WriteLine("To select an item enter");
+                Console.WriteLine("[1] Candy");
+                Console.WriteLine("[2] Chips");
+                Console.WriteLine("[3] Gum");
+                Console.WriteLine("[4] Cookies");
+                Console.WriteLine("[0] View Balance");
+                Console.WriteLine("[9] Exit");
+                Console.Write("Enter your choice: ");
+
+                int choice = int.Parse(Console.ReadLine());
+
+                switch (choice)
+                {
+                    case 1:
+                        candy.SellProduct(cash);
+                        break;
+                    case 2:
+                        chips.SellProduct(cash);
+                        break;
+                    case 3:
+                        gum.SellProduct(cash);
+                        break;
+                    case 4:
+                        cookies.SellProduct(cash);
+                        break;
+                    case 0:
+                        Console.WriteLine($"Current balance: {cash.CurrentBalance()} cents");
+                        break;
+                    case 9:
+                        Console.WriteLine("GOODBYE");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+
+                }
+
+            }
+
+        }
+
+        private static void SellProduct(Dispenser candy, object cashRegister)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    }

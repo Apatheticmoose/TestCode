@@ -1,1 +1,2 @@
-OOP class activity, create a Vending Machine on C#. 
+OOP class activity, Vending Machine on C#. 
+It has 2 class, CashRegister and Dispenser
